@@ -1,0 +1,74 @@
+﻿@page "/editcategory/{categoryId}"
+@inject NavigationManager NavigationManager
+@inject UseCases.IEditCategoryUseCase EditCategoryUseCase
+@inject UseCases.IGetCategoryByIdUseCase GetCategoryByIdUseCase
+<h3>Edit Category</h3>
+
+@if (category is not null)
+{
+    <EditForm Model="category" class="form-horizontal" OnValidSubmit="OnValidSubmitCategory">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name" class="control-label col-sm-2">Name</label>
+            <div class="col-sm-10">
+                <InputText id="name" @bind-Value="category.Name" class="form-control"></InputText>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description" class="control-label col-sm-2">Description</label>
+            <div class="col-sm-10">
+                <InputTextArea id="description" @bind-Value="category.Description" class="form-control" rows="3"></InputTextArea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" @onclick="OnCancel" class="btn btn-sm btn-danger">Cancel</button>
+                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+            </div>
+        </div>
+
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string CategoryId { get; set; }
+
+    private Category category;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if(int.TryParse(this.CategoryId, out int iCategoryId))
+        {
+            //this.category = GetCategoryByIdUseCase.Execute(iCategoryId);
+            var cat = GetCategoryByIdUseCase.Execute(iCategoryId);
+            this.category = new Category
+            {
+                CategoryId = cat.CategoryId,
+                Name = cat.Name,
+                Description = cat.Description
+            };
+        }
+    }
+
+    private void OnValidSubmitCategory()
+    {
+        EditCategoryUseCase.Execute(this.category);
+        NavigationManager.NavigateTo("categories");
+    }
+
+    private void OnCancel()
+    {
+        NavigationManager.NavigateTo("categories");
+    }
+}

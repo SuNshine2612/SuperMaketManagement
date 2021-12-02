@@ -1,0 +1,66 @@
+﻿@page "/categories";
+@inject UseCases.IViewCategoriesUseCase ViewCategoryUseCase
+@inject NavigationManager NavigationManager
+@inject UseCases.IDeleteCategoryUseCase DeleteCategoryUseCase
+<h3>Manage Categories</h3>
+
+@code {
+    private List<Category> categories;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadCategories();
+    }
+
+    private void OnClickAddCategory()
+    {
+        NavigationManager.NavigateTo("/addcategory");
+    }
+
+    private void EditCategory(Category category)
+    {
+        NavigationManager.NavigateTo($"/editcategory/{category.CategoryId}");
+    }
+
+    private void DeleteCategory(int categoryID)
+    {
+        DeleteCategoryUseCase.Execute(categoryID);
+        LoadCategories();
+    }
+
+    private void LoadCategories()
+    {
+        categories = ViewCategoryUseCase.Execute().ToList();
+    }
+}
+
+
+@if (categories is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th colspan="2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>@category.Description</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" @onclick="@(() => EditCategory(category))">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger" @onclick="@(() => DeleteCategory(category.CategoryId))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br/>
+<button type="button" @onclick="OnClickAddCategory" class="btn btn-primary btn-sm">Add Category</button>
