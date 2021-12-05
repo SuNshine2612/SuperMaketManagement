@@ -41,7 +41,9 @@ namespace Plugins.DataStore.InMemory
 
         public void DeleteProduct(int productID)
         {
-            products?.Remove(GetProduct(productID));
+            var temp = GetProduct(productID);
+            if(temp is not null)
+                products?.Remove(temp);
         }
 
         public Product GetProduct(int productID)
