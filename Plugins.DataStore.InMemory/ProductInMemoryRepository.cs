@@ -41,12 +41,12 @@ namespace Plugins.DataStore.InMemory
 
         public void DeleteProduct(int productID)
         {
-            throw new NotImplementedException();
+            products?.Remove(GetProduct(productID));
         }
 
         public Product GetProduct(int productID)
         {
-            throw new NotImplementedException();
+            return products?.FirstOrDefault(x => x.ProductId == productID);
         }
 
         public IEnumerable<Product> GetProducts()
@@ -56,7 +56,14 @@ namespace Plugins.DataStore.InMemory
 
         public void UpdateProduct(Product product)
         {
-            throw new NotImplementedException();
+            Product update = GetProduct(product.ProductId);
+            if (update is not null)
+            {
+                update.Name = product.Name;
+                update.CategoryId = product.CategoryId;
+                update.Price = product.Price;
+                update.Quantity = product.Quantity;
+            }
         }
     }
 }

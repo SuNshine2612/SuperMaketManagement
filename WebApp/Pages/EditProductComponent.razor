@@ -1,9 +1,10 @@
-﻿@page "/addproduct"
+﻿@page "/editproduct/{productId}"
 @inject NavigationManager NavigationManager
-@inject UseCases.IAddProductUseCase AddProductUseCase
+@inject UseCases.IEditProductUseCase EditProductUseCase
+@inject UseCases.IGetProductByIdUseCase GetProductByIdUseCase
 @inject UseCases.IViewCategoriesUseCase ViewCategoriesUseCase
 
-<h3>Add Product</h3>
+<h3>Edit Product</h3>
 
 @if (product is not null)
 {
@@ -22,10 +23,10 @@
             <label for="categoryId" class="control-label col-sm-2">Category</label>
             <div class="col-sm-10">
                 <InputSelect id="categoryId" class="form-control" @bind-Value="product.CategoryId">
-                    <option selected>-- Choose Category --</option>
+                    <option>-- Choose Category --</option>
                     @foreach (var category in categories)
                     {
-                        <option value="@category.CategoryId">@category.Name</option>
+                    <option value="@category.CategoryId">@category.Name</option>
                     }
                 </InputSelect>
             </div>
@@ -56,19 +57,38 @@
 }
 
 @code {
+    [Parameter]
+    public string ProductId { get; set; }
+
     private Product product;
     private IEnumerable<Category> categories;
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        product = new();
         categories = ViewCategoriesUseCase.Execute();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (int.TryParse(ProductId, out int iProductId))
+        {
+            //product = GetProductByIdUseCase.Execute(iProductId);
+            var temp = GetProductByIdUseCase.Execute(iProductId);
+            product = new Product
+            {
+                ProductId = temp.ProductId,
+                CategoryId = temp.CategoryId,
+                Name = temp.Name,
+                Price = temp.Price,
+                Quantity = temp.Quantity
+            };
+        }
     }
 
     private void OnValidSubmitProduct()
     {
-        AddProductUseCase.Execute(product);
+        EditProductUseCase.Execute(this.product);
         NavigationManager.NavigateTo("products");
     }
 

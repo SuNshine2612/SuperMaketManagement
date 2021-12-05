@@ -16,7 +16,7 @@
 
     protected void EditProduct(Product product)
     {
-
+        NavigationManager.NavigateTo($"/editproduct/{product.ProductId}");
     }
 
     protected void DeleteProduct(int productId)
