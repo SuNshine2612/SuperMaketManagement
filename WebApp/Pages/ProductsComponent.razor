@@ -1,0 +1,64 @@
+﻿@page "/products"
+@inject UseCases.IViewProductsUseCase  ViewProductsUseCase
+@inject UseCases.IGetCategoryByIdUseCase  GetCategoryByIdUseCase
+@inject NavigationManager NavigationManager
+
+<h3>Manage Products</h3>
+
+@code {
+    private IEnumerable<Product> products;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        products = ViewProductsUseCase.Execute();
+    }
+
+    protected void EditProduct(Product product)
+    {
+
+    }
+
+    protected void DeleteProduct(int productId)
+    {
+    }
+
+    private void OnClickAddProduct()
+    {
+        NavigationManager.NavigateTo("/addproduct");
+    }
+}
+
+@if (products is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th colspan="2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@GetCategoryByIdUseCase.Execute(product.CategoryId.Value)?.Name</td>
+                    <td>@product.Quantity</td>
+                    <td>@(Math.Round(product.Price.Value, 2))</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" @onclick="@(() => EditProduct(product))">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger" @onclick="@(() => DeleteProduct(product.ProductId))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+<button type="button" @onclick="OnClickAddProduct" class="btn btn-primary btn-sm">Add Product</button>

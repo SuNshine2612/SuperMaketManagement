@@ -1,0 +1,79 @@
+﻿@page "/addproduct"
+@inject NavigationManager NavigationManager
+@inject UseCases.IAddProductUseCase AddProductUseCase
+@inject UseCases.IViewCategoriesUseCase ViewCategoriesUseCase
+
+<h3>Add Product</h3>
+
+@if (product is not null)
+{
+<EditForm Model="product" class="form-horizontal" OnValidSubmit="OnValidSubmitProduct">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <div class="form-group">
+        <label for="name" class="control-label col-sm-2">Name</label>
+        <div class="col-sm-10">
+            <InputText id="name" @bind-Value="product.Name" class="form-control"></InputText>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="categoryId" class="control-label col-sm-2">Category</label>
+        <div class="col-sm-10">
+            <InputSelect id="categoryId" class="form-control" @bind-Value="product.CategoryId">
+                <option selected>-- Choose Category --</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.CategoryId">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="quantity" class="control-label col-sm-2">Quantity</label>
+        <div class="col-sm-10">
+            <InputNumber id="quantity" @bind-Value="product.Quantity" class="form-control" min="0"></InputNumber>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="price" class="control-label col-sm-2">Price</label>
+        <div class="col-sm-10">
+            <InputNumber id="price" @bind-Value="product.Price" @bind-Value:format="F2" class="form-control" min="1"></InputNumber>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" @onclick="OnCancel" class="btn btn-sm btn-danger">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+        </div>
+    </div>
+
+</EditForm>
+}
+
+@code {
+    private Product product;
+    private IEnumerable<Category> categories;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        product = new();
+        categories = ViewCategoriesUseCase.Execute();
+    }
+
+    private void OnValidSubmitProduct()
+    {
+        AddProductUseCase.Execute(product);
+        NavigationManager.NavigateTo("products");
+    }
+
+    private void OnCancel()
+    {
+        NavigationManager.NavigateTo("products");
+    }
+}
