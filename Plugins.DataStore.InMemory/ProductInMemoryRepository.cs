@@ -56,6 +56,11 @@ namespace Plugins.DataStore.InMemory
             return products;
         }
 
+        public IEnumerable<Product> GetProductsByCategoryId(int categoryID)
+        {
+            return products.Where(x => x.CategoryId == categoryID);
+        }
+
         public void UpdateProduct(Product product)
         {
             Product update = GetProduct(product.ProductId);
