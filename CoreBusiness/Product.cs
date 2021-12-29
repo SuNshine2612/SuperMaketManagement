@@ -19,5 +19,9 @@ namespace CoreBusiness
         public double? Price { get; set; }
         [Required]
         public int? Quantity { get; set; }
+
+
+        // navigation property for ef core
+        public Category Category { get; set; }
     }
 }
