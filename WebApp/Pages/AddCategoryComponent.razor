@@ -1,6 +1,10 @@
 ﻿@page "/addcategory"
 @inject NavigationManager NavigationManager
 @inject UseCases.IAddCategoryUseCase AddCategoryUseCase
+
+@attribute [Authorize(Policy = "AdminOnly")]
+
+
 <h3>Add Category</h3>
 
 @if (category is not null)

@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject UseCases.IEditCategoryUseCase EditCategoryUseCase
 @inject UseCases.IGetCategoryByIdUseCase GetCategoryByIdUseCase
+@attribute [Authorize(Policy = "AdminOnly")]
 <h3>Edit Category</h3>
 
 @if (category is not null)

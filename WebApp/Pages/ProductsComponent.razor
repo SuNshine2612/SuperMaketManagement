@@ -3,7 +3,7 @@
 @inject UseCases.IGetCategoryByIdUseCase  GetCategoryByIdUseCase
 @inject UseCases.IDeleteProductUseCase DeleteProductUseCase
 @inject NavigationManager NavigationManager
-
+@attribute [Authorize(Policy = "AdminOnly")]
 <h3>Manage Products</h3>
 
 @code {

@@ -3,7 +3,7 @@
 @inject UseCases.IEditProductUseCase EditProductUseCase
 @inject UseCases.IGetProductByIdUseCase GetProductByIdUseCase
 @inject UseCases.IViewCategoriesUseCase ViewCategoriesUseCase
-
+@attribute [Authorize(Policy = "AdminOnly")]
 <h3>Edit Product</h3>
 
 @if (product is not null)

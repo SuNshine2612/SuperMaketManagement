@@ -43,11 +43,21 @@ namespace WebApp
                 }
             );
 
+            services.AddAuthorization(options => {
+                options.AddPolicy("AdminOnly", p => p.RequireClaim("Position", "Admin"));
+                options.AddPolicy("CashierOnly", p => p.RequireClaim("Position", "Cashier"));
+            });
+
 
             // DI For In - Memory Data Store
-            services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
+            /*services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
             services.AddScoped<IProductRepository, ProductInMemoryRepository>();
-            services.AddScoped<ITransactionRepository, TransactionInMemoryRepository>();
+            services.AddScoped<ITransactionRepository, TransactionInMemoryRepository>();*/
+
+            // DI For EF Core SQL Data Store
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             // DI For Use cases and repositories
             services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
@@ -87,8 +97,12 @@ namespace WebApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

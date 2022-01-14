@@ -3,6 +3,8 @@
 @inject UseCases.IAddProductUseCase AddProductUseCase
 @inject UseCases.IViewCategoriesUseCase ViewCategoriesUseCase
 
+@attribute [Authorize(Policy = "AdminOnly")]
+
 <h3>Add Product</h3>
 
 @if (product is not null)

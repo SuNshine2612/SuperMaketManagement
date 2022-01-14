@@ -2,6 +2,9 @@
 @inject UseCases.IViewCategoriesUseCase ViewCategoryUseCase
 @inject NavigationManager NavigationManager
 @inject UseCases.IDeleteCategoryUseCase DeleteCategoryUseCase
+
+@attribute [Authorize(Policy = "AdminOnly")]
+
 <h3>Manage Categories</h3>
 
 @code {
